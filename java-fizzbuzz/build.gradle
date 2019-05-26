@@ -1,0 +1,51 @@
+plugins {
+	id 'java'
+	id 'eclipse'
+	id 'idea'
+	id 'org.springframework.boot' version '1.5.1.RELEASE'
+	id 'net.ltgt.errorprone' version '0.0.8'
+}
+
+def springBootVersion = '1.5.1.RELEASE'
+
+group = 'io.github.jptomo'
+version = '0.0.1-SNAPSHOT'
+description = """FizzBuzz"""
+
+def jdkVersion = 1.8
+sourceCompatibility = jdkVersion
+targetCompatibility = jdkVersion
+
+configurations.errorprone {
+	resolutionStrategy.force 'com.google.errorprone:error_prone_core:2.0.14' 
+}
+
+compileJava {
+	options.encoding = 'UTF-8'
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+compileTestJava {
+	options.encoding = 'UTF-8'
+	options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
+}
+
+jar {
+	baseName = 'java-fizzbuzz'
+	version =  '0.0.0-SNAPSHOT'
+}
+
+repositories {
+	jcenter()
+	maven { url "http://repo.spring.io/release" }
+	maven { url "http://repo.spring.io/milestone" }
+	maven { url "http://repo.spring.io/snapshot" }
+}
+
+dependencies {
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter', version: "$springBootVersion"
+	compileOnly group: 'org.projectlombok', name: 'lombok', version: '1.16.12'
+	testCompile group: 'org.springframework.boot', name: 'spring-boot-starter-test', version: "$springBootVersion"
+}
+
+// vim:noet:

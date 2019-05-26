@@ -1,0 +1,4 @@
+---
+BUNDLE_PATH: "/home/vagrant/.local/var/lib/chef-bundle"
+BUNDLE_GEMFILE: "/vagrant/chef/Gemfile"
+BUNDLE_DISABLE_SHARED_GEMS: "true"

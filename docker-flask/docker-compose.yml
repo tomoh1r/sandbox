@@ -1,0 +1,16 @@
+---
+version: '3.7'
+
+services:
+  app:
+    build:
+      context: ./misc
+      dockerfile: flask.Dockerfile
+    volumes:
+      - ./:/usr/src/app
+    ports:
+      - 5000:5000
+      - 8080:8080
+    environment:
+      - FLASK_APP=src/hello.py
+    tty: true

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8"/>
+    <title>javascript-marked</title>
+
+    <link rel="stylesheet" type="text/css"
+      href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+    <style>.selector-for-some-widget { box-sizing: content-box; }</style>
+  </head>
+  <body>
+    <nav id="header" class="navbar navbar-default">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed"
+              data-toggle="collapse" data-target="#navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">ex-aws</a>
+        </div>
+        <div class="collapse navbar-collapse" id="navbar">
+          <ul class="nav navbar-nav">
+            <li class="nav-item">
+              <a class="nav-link" href="/docs/Home.md">Home</a>
+            </li>
+          </ul>
+        <div>
+        <form class="navbar-form navbar-right">
+          <div class="form-group">
+            <input type="text" class="form-control" placeholder="pathname">
+          </div>
+          <button type="submit" class="btn btn-default">Go</button>
+        </form>
+      </div>
+    </nav>
+
+    <div id="md_content" class="container"></div>
+
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/marked/0.3.6/marked.min.js"></script>
+    <script>
+      var TARGET_SEL = '#md_content',
+          UrlParser = class {
+            constructor(href) {
+              this.basePathname = '/index.html';
+              this.updateHref(href);
+            }
+            updateHref(href) {
+              this.href = href;
+              if (this.isLocalhost) {
+                this.url = null;
+                this.origin = null;
+                this.pathname = this.href;
+              } else {
+                this.url = new URL(this.href);
+                this.origin = this.url.origin;
+                this.pathname = this.url.pathname;
+              }
+
+              if (this.pathname.startsWith('./')) {
+                this.pathname = this.pathname.substr(1);
+              }
+              if (! this.pathname.startsWith('/')) {
+                this.pathname = '/' + this.pathname;
+              }
+
+              if (!!this.url) {
+                this.search = this.url.search;
+              } else {
+                this.search = '?pathname=' + this.pathname;
+              }
+            }
+            get fpath() {
+              if (! this.isLocalhost) {
+                return this.href;
+              }
+
+              var fpath = this.pathname;
+              if (this.pathname == '/' || this.pathname == '/index.html') {
+                fpath = '/README.md';
+              }
+              if (! this.pathname.startsWith('/')) {
+                fpath = '/' + fpath;
+              }
+              return fpath;
+            }
+            get isRoot() {
+              return (this.pathname == '/index.html' ||
+                      this.pathname == '/' ||
+                      this.pathname == '/README.md');
+            }
+            get isLocalhost() {
+              if (! ['//', 'http://', 'https://'].some(
+                  (x) => { return this.href.startsWith(x); })) {
+                return true;
+              } else if (!!this.url) {
+                if (['localhost', '127.0.0.1'].some(
+                      (x) => { return this.url.hostname == x; })) {
+                  return true;
+                }
+              }
+              return false;
+            }
+            get isMd() {
+              if (this.pathname.endsWith('.md')) {
+                return true;
+              } else if (this.isLocalhost) {
+                if (this.pathname == '/') {
+                  return true;
+                } else if(this.pathname == '/index.html') {
+                  return true;
+                }
+              }
+              return false;
+            }
+          },
+          Page = class {
+            constructor() {
+              var old_url = document.URL;
+
+              this.main_title = '';
+
+              this.updateLink('#header');
+              $('form.navbar-form').on('submit', function(e) {
+                this.updateContent($('form.navbar-form input')[0].value);
+                return false;
+              });
+              this.urlParser = new UrlParser(old_url);
+              this.setupTitle();
+              this.updateContent(old_url);
+            }
+            setupTitle() {
+              this.updateContent('/README.md');
+            }
+            updateDisplayUrl() {
+              history.pushState(
+                null,
+                null,
+                this.urlParser.basePathname +
+                this.urlParser.search);
+            }
+            updateTitle(title) {
+              if (this.urlParser.isRoot) {
+                this.main_title = title;
+                document.title = title;
+              } else {
+                document.title = this.main_title + ' - ' + title;
+              }
+            }
+            updateLink(sel) {
+              var self = this;
+              $(sel).find('a').each(function(idx, elem) {
+                var elem$ = $(elem),
+                    urlParser = new UrlParser(elem$.attr('href'));
+                if (urlParser.isMd) {
+                  elem$.on('click', function(e) {
+                    self.updateContent(urlParser.href);
+                    return false;
+                  });
+                  elem$.attr('href', 'javascript:void(0)');
+                };
+              });
+            }
+            updateContent(href) {
+              var self = this;
+              this.urlParser.updateHref(href);
+              if (! this.urlParser.isMd) {
+                return;
+              }
+
+              $.ajax({
+                url: self.urlParser.fpath,
+                cache: false,
+                success: function(data) {
+                  var elem$ = $(TARGET_SEL);
+                  elem$.html(marked(data));
+                  self.updateLink(TARGET_SEL);
+                  self.updateDisplayUrl();
+                  self.updateTitle(elem$.find('h1').text());
+                },
+                error: function(xhr, errorType) {
+                  $(TARGET_SEL).append("failed to load.");
+                }
+              });
+            }
+          };
+
+      $(document).ready(function() {
+        var page = new Page();
+      });
+    </script>
+  </body>
+</html>

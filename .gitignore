@@ -1,0 +1,43 @@
+lib/*
+tmp/*
+var/lib/mysql/*
+var/repo/*
+var/pyvenv/*
+.gradle
+
+### Java
+
+# Compiled class file
+*.class
+
+# Log file
+*.log
+
+# BlueJ files
+*.ctxt
+
+# Mobile Tools for Java (J2ME)
+.mtj.tmp/
+
+# Package Files #
+*.jar
+*.jar.original
+*.war
+*.ear
+*.zip
+*.tar.gz
+*.rar
+
+# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
+hs_err_pid*
+
+# project
+/*/build/
+
+###
+/vagrant-chef/.vagrant
+/python-venusian-pyramid/dev-app/dev_app.egg-info/
+/python-venusian-pyramid/dev-common/dev_common.egg-info/
+
+## wip
+/docker-mysql/
