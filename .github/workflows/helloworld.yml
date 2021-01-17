@@ -1,0 +1,15 @@
+name: hello-world
+
+on: push
+
+jobs:
+  hello-world:
+    name: Say hello to The World
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Say hello to The World
+        uses: ./github-actions-hello-world
+        with:
+          who-to-greet: 'Mona the Octocat'
