@@ -1,8 +1,6 @@
 name: hello-world
 
-on:
-  push:
-    branches: [ $default-branch ]
+on: push
 
 jobs:
   hello-world:
