@@ -1,0 +1,8 @@
+*
+!Containerfile
+!src/
+!src/**
+!scripts/
+!scripts/**
+!test/
+!test/**

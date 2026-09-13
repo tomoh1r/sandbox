@@ -1,0 +1,22 @@
+FROM quay.io/centos/centos:stream9
+
+# EPEL のランタイムとコンパイラを導入する。
+RUN dnf install -y dnf-plugins-core \
+    && dnf config-manager --set-enabled crb \
+    && dnf install -y epel-release epel-next-release \
+    && dnf install -y erlang-erts erlang-compiler \
+    && dnf clean all \
+    && mkdir -p /home/demo /app \
+    && chown 1000:1000 /home/demo /app
+
+WORKDIR /app
+COPY --chown=1000:1000 src/ src/
+COPY --chown=1000:1000 scripts/ scripts/
+COPY --chown=1000:1000 test/ test/
+ENV HOME=/home/demo
+USER 1000:1000
+
+# ビルド時にもコンパイルし、構文エラーを検出する。
+RUN mkdir -p ebin && erlc -Werror -o ebin src/cluster_demo.erl
+EXPOSE 4369 9100
+ENTRYPOINT ["bash", "scripts/container-entrypoint.sh"]
