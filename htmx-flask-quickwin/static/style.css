@@ -1,0 +1,176 @@
+:root {
+  font-family: system-ui, sans-serif;
+  color: #263e37;
+  background: #f5f5ef;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+}
+
+main {
+  max-width: 680px;
+  margin: 64px auto;
+  padding: 0 24px;
+}
+
+.eyebrow {
+  color: #527164;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .2em;
+}
+
+h1 {
+  font-size: clamp(32px, 6vw, 46px);
+  line-height: 1.4;
+  letter-spacing: -.04em;
+  margin: 20px 0;
+}
+
+header > p:last-child, footer {
+  color: #68766f;
+  font-size: 14px;
+}
+
+section {
+  background: white;
+  border: 1px solid #dfe5dc;
+  border-radius: 16px;
+  padding: 28px;
+  margin-top: 32px;
+}
+
+label {
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.input-row {
+  display: flex;
+  gap: 8px;
+}
+
+input, button {
+  font: inherit;
+}
+
+input:not([type=hidden]) {
+  min-width: 0;
+  width: 100%;
+  border: 1px solid #bccac0;
+  border-radius: 8px;
+  padding: 12px;
+}
+
+button {
+  cursor: pointer;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px;
+  background: #2e6652;
+  color: white;
+  white-space: nowrap;
+}
+
+button:hover {
+  filter: brightness(.92);
+}
+
+button:disabled {
+  opacity: .5;
+  cursor: wait;
+}
+
+:focus-visible {
+  outline: 3px solid #a47b2d;
+  outline-offset: 3px;
+}
+
+.list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+h2 {
+  font-size: 16px;
+}
+
+.list-heading span {
+  font-size: 12px;
+  color: #68766f;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid #edf0e9;
+}
+
+.task-title {
+  flex: 1;
+  overflow-wrap: anywhere;
+}
+
+.done .task-title {
+  text-decoration: line-through;
+  color: #77847c;
+}
+
+.toggle {
+  background: #edf4ee;
+  color: #2e6652;
+  width: 44px;
+  padding: 10px;
+}
+
+.delete {
+  background: transparent;
+  color: #8c4944;
+  font-size: 12px;
+  padding: 12px 8px;
+}
+
+.empty {
+  display: block;
+  text-align: center;
+  padding: 36px 0;
+  line-height: 1.9;
+  color: #68766f;
+}
+
+footer {
+  text-align: center;
+  margin-top: 24px;
+}
+
+.error, #request-error {
+  color: #a22c26;
+  font-size: 14px;
+}
+
+@media (max-width: 480px) {
+  main {
+    margin: 32px auto;
+    padding: 0 16px;
+  }
+  section {
+    padding: 20px 16px;
+  }
+}

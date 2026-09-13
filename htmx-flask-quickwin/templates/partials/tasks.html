@@ -1,0 +1,94 @@
+<section
+  id="tasks"
+  aria-label="タスク管理"
+  hx-target="this"
+  hx-swap="outerHTML"
+  hx-sync="this:queue all"
+>
+  <form
+    class="add-form"
+    method="post"
+    action="{{ url_for('add_task') }}"
+    hx-post="{{ url_for('add_task') }}"
+    hx-disabled-elt="find button"
+  >
+    <input
+      type="hidden"
+      name="csrf_token"
+      value="{{ session.csrf_token }}"
+    >
+    <label for="title">次にやること</label>
+    <div class="input-row">
+      <input
+        id="title"
+        name="title"
+        value="{{ title }}"
+        placeholder="例：企画のアイデアを3つ書く"
+        maxlength="200"
+        required
+        autocomplete="off"
+      >
+      <button type="submit">追加</button>
+    </div>
+    {% if error %}
+      <p class="error" role="alert">{{ error }}</p>
+    {% endif %}
+  </form>
+  <div class="list-heading">
+    <h2>タスク一覧</h2>
+    <span role="status">
+      {{ tasks|selectattr('done')|list|length }} / {{ tasks|length }} 完了
+    </span>
+  </div>
+  <ul>
+    {% for task in tasks %}
+      <li class="{{ 'done' if task.done else '' }}">
+        <form
+          method="post"
+          action="{{ url_for('toggle_task', task_id=task.id) }}"
+          hx-post="{{ url_for('toggle_task', task_id=task.id) }}"
+        >
+          <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ session.csrf_token }}"
+          >
+          <button
+            class="toggle"
+            type="submit"
+            aria-label="{{ task.title }}を{{
+              '未完了に戻す' if task.done else '完了する'
+            }}"
+            aria-pressed="{{ 'true' if task.done else 'false' }}"
+          >
+            {{ '✓' if task.done else '○' }}
+          </button>
+        </form>
+        <span class="task-title">{{ task.title }}</span>
+        <form
+          method="post"
+          action="{{ url_for('delete_task', task_id=task.id) }}"
+          hx-post="{{ url_for('delete_task', task_id=task.id) }}"
+        >
+          <input
+            type="hidden"
+            name="csrf_token"
+            value="{{ session.csrf_token }}"
+          >
+          <button
+            type="submit"
+            class="delete"
+            aria-label="{{ task.title }}を削除"
+          >
+            削除
+          </button>
+        </form>
+      </li>
+    {% else %}
+      <li class="empty">
+        まだタスクはありません。<br>
+        <small>まずは、小さなひとつを追加しましょう。</small>
+      </li>
+    {% endfor %}
+  </ul>
+</section>

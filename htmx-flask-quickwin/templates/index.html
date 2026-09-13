@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta
+    name="description"
+    content="今日の小さなタスクを整理するシンプルなタスク管理アプリ。"
+  >
+  <title>Quick Win — 今日のタスク</title>
+  <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='style.css') }}"
+  >
+  <script
+    src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10/dist/htmx.min.js"
+    integrity="sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+    crossorigin="anonymous"
+    defer
+  ></script>
+  <script defer>
+    for (const eventName of ['htmx:responseError', 'htmx:sendError']) {
+      document.addEventListener(eventName, () => {
+        document.getElementById('request-error').hidden = false;
+      });
+    }
+    document.addEventListener('htmx:afterSwap', () => {
+      document.getElementById('request-error').hidden = true;
+    });
+  </script>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">QUICK WIN</p>
+      <h1>小さく始めて、<br>ひとつずつ。</h1>
+      <p>今日やることを、ここにまとめよう。</p>
+    </header>
+    <p id="request-error" role="alert" hidden>
+      通信に失敗しました。
+      ページを再読み込みしてお試しください。
+    </p>
+    {% include 'partials/tasks.html' %}
+    <footer>小さな達成を、毎日の積み重ねに。</footer>
+  </main>
+</body>
+</html>
